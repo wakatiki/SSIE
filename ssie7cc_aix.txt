@@ -1,0 +1,46 @@
+#!/bin/ksh
+
+rm -Rf /tmp/ssie7
+mkdir /tmp/ssie7
+cd /tmp/ssie7
+
+
+ftp -n 10.151.29.201 21 << fin_FTP
+   user ssie7src ssie7src
+   verbose
+   prompt -n
+   cd v7.1
+   ascii
+   mget *.c
+   mget *.h
+   quit
+fin_FTP
+
+
+echo ""
+echo ""
+echo ""
+
+gcc -DOS_AIX  -c ssie7.c -maix64
+
+
+gcc ssie7.o -o ssie7 -maix64
+
+
+echo ""
+echo ""
+echo ""
+
+ftp -n 10.151.29.201 21 << fin_FTP
+   user ssie7src ssie7src
+   verbose
+   prompt -n
+   cd /bin/aix
+   binary
+   put ssie7
+   quit
+fin_FTP
+
+echo ""
+echo ""
+echo ""
